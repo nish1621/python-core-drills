@@ -1,21 +1,21 @@
-import fileinput
-from multiprocessing import process
+data={"INFO":0, "WARNING":0, "ERROR":0}
+error_message=[]
+
+with open("sample.log", "r", encoding="utf-8") as f:
+    for line in f:
+        lineTOread=line.strip()
 
 
+        if lineTOread.startswith("[ERROR]"):
+            data["ERROR"]+=1
+            parts=lineTOread.split(" - ")
+            errors=parts[1]
+            error_message.append(errors)
 
-for line in fileinput.input(encoding="utf-8"):
-    process(line)
-    st=line.split()
-    err=0
-    info=0
-    warn=0
-    for i in st:
-        if i=="[ERROR]":
-            err+=1
-        elif i=="[WARNING]":
-            warn+=1
-        elif i=="[INFO]":
-            info+=1
-        continue
-res={"INFO":info, "WARNING":warn, "ERROR":err}
-print(res)
+        elif lineTOread.startswith("[WARNING]"):
+            data["WARNING"]+=1
+
+        elif lineTOread.startswith("[INFO]"):
+            data["INFO"]+=1
+
+print(error_message)
