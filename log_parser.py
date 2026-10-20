@@ -21,5 +21,6 @@ def parse_lof_file(filepath):
 
     return data, error_message
 counts, errors = parse_lof_file("sample.log")
+
 print("Count:", counts)
 print("Errors:", errors)
