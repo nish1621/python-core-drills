@@ -1,0 +1,12 @@
+{
+    "summary": {
+        "INFO": 3,
+        "WARNING": 1,
+        "ERROR": 3
+    },
+    "errors": [
+        "Database connection timeout",
+        "Failed to write to disk",
+        "Malformed error line"
+    ]
+}
