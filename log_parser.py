@@ -1,3 +1,16 @@
+import json
+
+
+def save_rprt_to_json(counts, errors, output_filepath):
+    report = {
+        "summary": counts,
+        "errors": errors,
+    }
+
+    with open(output_filepath, "w", encoding="utf-8") as f:
+        json.dump(report, f, indent=4)
+
+
 def parse_log_file(filepath):
     data = {"INFO": 0, "WARNING": 0, "ERROR": 0}
     error_message = []
@@ -26,8 +39,9 @@ def parse_log_file(filepath):
     return data, error_message
 
 
-counts, errors = parse_log_file("sample.log")
-
-print("Count:", counts)
-print("Errors:", errors)
-missing_counts, missing_errors = parse_log_file("does_not_exist.log")
+if __name__ == "__main__":
+    counts, errors = parse_log_file("sample.log")
+    print("Count:", counts)
+    print("Errors:", errors)
+    save_rprt_to_json(counts, errors, "report.json")
+    missing_counts, missing_errors = parse_log_file("does_not_exist.log")
