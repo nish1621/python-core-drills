@@ -2,7 +2,7 @@ import argparse
 import json
 
 
-def save_rprt_to_json(counts, errors, output_filepath):
+def save_report_to_json(counts, errors, output_filepath):
     report = {
         "summary": counts,
         "errors": errors,
@@ -55,4 +55,4 @@ if __name__ == "__main__":
     counts, errors = parse_log_file(args.log_file)
     print("Count:", counts)
     print("Errors:", errors)
-    save_rprt_to_json(counts, errors, args.output)
+    save_report_to_json(counts, errors, args.output)
