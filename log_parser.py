@@ -2,53 +2,56 @@ import argparse
 import json
 from pathlib import Path
 
-
-def save_report_to_json(counts, errors, output_filepath):
-    report = {
-        "summary": counts,
-        "errors": errors,
-    }
-
-    with open(output_filepath, "w", encoding="utf-8") as f:
-        json.dump(report, f, indent=4)
+LEVELS = ["INFO", "WARNING", "ERROR"]
 
 
-def filter_errors_by_keyword(errors, keyword):
-    return [error for error in errors if keyword.lower() in error.lower()]
+class LogAnalyzer:
+    def __init__(self, filepath: str | Path) -> None:
+        self.filepath = Path(filepath)
+        if self.filepath.suffix not in (".log", ".txt"):
+            raise ValueError(f"Unsupported file extension: {self.filepath.suffix}")
 
+        self.counts: dict[str, int] = {level: 0 for level in LEVELS}
+        self.errors: list[str] = []
 
-def parse_log_file(filepath):
-    filepath = Path(filepath)
+    def parse(self) -> tuple[dict[str, int], list[str]]:
+        self.counts = {level: 0 for level in LEVELS}
+        self.errors = []
 
-    LEVELS = ["INFO", "WARNING", "ERROR"]
-    data = {level: 0 for level in LEVELS}
-    error_message = []
+        try:
+            with self.filepath.open("r", encoding="utf-8") as f:
+                for line in f:
+                    line_to_read = line.strip()
+                    if line_to_read.startswith("[ERROR]"):
+                        self.counts["ERROR"] += 1
+                        parts = line_to_read.split(" - ")
+                        if len(parts) > 1:
+                            self.errors.append(parts[1])
+                        else:
+                            self.errors.append("Malformed error line")
 
-    if filepath.suffix not in (".log", ".txt"):
-        raise ValueError(f"Unsupported file extension: {filepath.suffix}")
+                    elif line_to_read.startswith("[WARNING]"):
+                        self.counts["WARNING"] += 1
 
-    try:
-        with filepath.open("r", encoding="utf-8") as f:
-            for line in f:
-                line_to_read = line.strip()
+                    elif line_to_read.startswith("[INFO]"):
+                        self.counts["INFO"] += 1
 
-                if line_to_read.startswith("[ERROR]"):
-                    data["ERROR"] += 1
-                    parts = line_to_read.split(" - ")
-                    if len(parts) > 1:
-                        error_message.append(parts[1])
-                    else:
-                        error_message.append("Malformed error line")
+        except FileNotFoundError:
+            print(f"File not found {self.filepath}")
 
-                elif line_to_read.startswith("[WARNING]"):
-                    data["WARNING"] += 1
+        return self.counts, self.errors
 
-                elif line_to_read.startswith("[INFO]"):
-                    data["INFO"] += 1
+    def filter_errors(self, keyword: str) -> list[str]:
+        return [error for error in self.errors if keyword.lower() in error.lower()]
 
-    except FileNotFoundError:
-        print(f"File not found {filepath}")
-    return data, error_message
+    def save_report(self, output_filepath: str | Path) -> None:
+        report = {
+            "summary": self.counts,
+            "errors": self.errors,
+        }
+
+        with open(output_filepath, "w", encoding="utf-8") as f:
+            json.dump(report, f, indent=4)
 
 
 if __name__ == "__main__":
@@ -68,10 +71,14 @@ if __name__ == "__main__":
         help="Filter errors by a specific keyword (case-insensitive)",
     )
     args = parser.parse_args()
-    counts, errors = parse_log_file(args.log_file)
-    if args.keyword:
-        errors = filter_errors_by_keyword(errors, args.keyword)
-        print("Filtered errors :", errors)
+
+    analyzer = LogAnalyzer(args.log_file)
+    counts, errors = analyzer.parse()
     print("Count:", counts)
     print("Errors:", errors)
-    save_report_to_json(counts, errors, args.output)
+
+    if args.keyword:
+        filtered = analyzer.filter_errors(args.keyword)
+        print("Filtered errors:", filtered)
+
+    analyzer.save_report(args.output)
