@@ -1,7 +1,8 @@
+import argparse
 import json
 
 
-def save_rprt_to_json(counts, errors, output_filepath):
+def save_report_to_json(counts, errors, output_filepath):
     report = {
         "summary": counts,
         "errors": errors,
@@ -40,8 +41,18 @@ def parse_log_file(filepath):
 
 
 if __name__ == "__main__":
-    counts, errors = parse_log_file("sample.log")
+    parser = argparse.ArgumentParser(
+        description="Parse server log files and export JSON reports."
+    )
+    parser.add_argument("log_file", help="Path to the .log file to parse")
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="report.json",
+        help="Path to save the output JSON report (default: report.json)",
+    )
+    args = parser.parse_args()
+    counts, errors = parse_log_file(args.log_file)
     print("Count:", counts)
     print("Errors:", errors)
-    save_rprt_to_json(counts, errors, "report.json")
-    missing_counts, missing_errors = parse_log_file("does_not_exist.log")
+    save_report_to_json(counts, errors, args.output)
