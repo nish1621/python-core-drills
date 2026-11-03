@@ -1,5 +1,6 @@
 import argparse
 import json
+from pathlib import Path
 
 
 def save_report_to_json(counts, errors, output_filepath):
@@ -12,12 +13,22 @@ def save_report_to_json(counts, errors, output_filepath):
         json.dump(report, f, indent=4)
 
 
+def filter_errors_by_keyword(errors, keyword):
+    return [error for error in errors if keyword.lower() in error.lower()]
+
+
 def parse_log_file(filepath):
-    data = {"INFO": 0, "WARNING": 0, "ERROR": 0}
+    filepath = Path(filepath)
+
+    LEVELS = ["INFO", "WARNING", "ERROR"]
+    data = {level: 0 for level in LEVELS}
     error_message = []
 
+    if filepath.suffix not in (".log", ".txt"):
+        raise ValueError(f"Unsupported file extension: {filepath.suffix}")
+
     try:
-        with open(filepath, "r", encoding="utf-8") as f:
+        with filepath.open("r", encoding="utf-8") as f:
             for line in f:
                 line_to_read = line.strip()
 
@@ -51,8 +62,16 @@ if __name__ == "__main__":
         default="report.json",
         help="Path to save the output JSON report (default: report.json)",
     )
+    parser.add_argument(
+        "-k",
+        "--keyword",
+        help="Filter errors by a specific keyword (case-insensitive)",
+    )
     args = parser.parse_args()
     counts, errors = parse_log_file(args.log_file)
+    if args.keyword:
+        errors = filter_errors_by_keyword(errors, args.keyword)
+        print("Filtered errors :", errors)
     print("Count:", counts)
     print("Errors:", errors)
     save_report_to_json(counts, errors, args.output)
