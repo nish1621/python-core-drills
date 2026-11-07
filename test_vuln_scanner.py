@@ -1,7 +1,7 @@
 from vuln_scanner import fetch_package_vulns
 
 
-def test_fetch_vulnerable_packages() -> None:
+def test_fetch_vulnerable_package() -> None:
     vulns = fetch_package_vulns("jinja2", "2.4.1")
     assert len(vulns) > 0
     assert isinstance(vulns, list)
