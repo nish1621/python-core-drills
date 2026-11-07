@@ -24,7 +24,7 @@ def test_parse_missing_file() -> None:
     assert errors == []
 
 
-def test_valid_file_extension() -> None:
+def test_invalid_file_extension() -> None:
     with pytest.raises(ValueError, match="Unsupported file extension"):
         LogAnalyzer("invalid.json")
 
