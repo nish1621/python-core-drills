@@ -27,7 +27,7 @@ def test_parse_missing_file() -> None:
 @pytest.mark.parametrize(
     "bad_filename", ["invalid.json", "photo.png", "data.csv", "script.py"]
 )
-def test_with_invalid_file(bad_filename: str) -> None:
+def test_with_invalid_file_extension(bad_filename: str) -> None:
     with pytest.raises(ValueError, match="Unsupported file extension"):
         LogAnalyzer(bad_filename)
 
