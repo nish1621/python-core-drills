@@ -24,18 +24,26 @@ def test_parse_missing_file() -> None:
     assert errors == []
 
 
-def test_invalid_file_extension() -> None:
+@pytest.mark.parametrize(
+    "bad_filename", ["invalid.json", "photo.png", "data.csv", "script.py"]
+)
+def test_with_invalid_file(bad_filename: str) -> None:
     with pytest.raises(ValueError, match="Unsupported file extension"):
-        LogAnalyzer("invalid.json")
+        LogAnalyzer(bad_filename)
 
 
-def test_filter_errors() -> None:
+@pytest.mark.parametrize(
+    "keyword, expected",
+    [
+        ("timeout", ["Database connection timeout"]),
+        ("DISK", ["Failed to write to disk"]),
+        ("nonexistent", []),
+    ],
+)
+def test_filter_errors(keyword: str, expected: list[str]) -> None:
     analyzer = LogAnalyzer("sample.log")
     analyzer.parse()
-
-    assert analyzer.filter_errors("timeout") == ["Database connection timeout"]
-    assert analyzer.filter_errors("DISK") == ["Failed to write to disk"]
-    assert analyzer.filter_errors("nonexistent") == []
+    assert analyzer.filter_errors(keyword) == expected
 
 
 def test_save_report(tmp_path: Path) -> None:
