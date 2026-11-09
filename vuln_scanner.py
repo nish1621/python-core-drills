@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import requests
 
 OSV_API_URL = "https://api.osv.dev/v1/query"
@@ -17,6 +19,25 @@ def fetch_package_vulns(package_name: str, version: str) -> list[str]:
 
     vulns = data.get("vulns", [])
     return [v["id"] for v in vulns if "id" in v]
+
+
+def scan_requirements_file(filepath: str | Path) -> dict[str, list[str]]:
+    req_path = Path(filepath)
+    results: dict[str, list[str]] = {}
+    with req_path.open("r", encoding="utf-8") as f:
+        for line in f:
+            clean_line = line.strip()
+            if not clean_line or clean_line.startswith("#"):
+                continue
+            if "==" in clean_line:
+                package_name, version = clean_line.split("==", 1)
+                vulns = fetch_package_vulns(package_name.strip(), version.strip())
+                results[f"{package_name.strip()}=={version.strip()}"] = vulns
+            else:
+                raise ValueError(
+                    f"Requirement must pin version with '==': {clean_line}"
+                )
+    return results
 
 
 if __name__ == "__main__":
