@@ -54,7 +54,7 @@ class LogAnalyzer:
             json.dump(report, f, indent=4)
 
 
-if __name__ == "__main__":
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Parse server log files and export JSON reports."
     )
@@ -82,3 +82,7 @@ if __name__ == "__main__":
         print("Filtered errors:", filtered)
 
     analyzer.save_report(args.output)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "python-core-drills"
+version = "0.1.0"
+description = "Core Python and GSoC readiness drills"
+authors = [{ name = "Nishil Belekar" }]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+]
+
+[project.scripts]
+log-parser = "log_parser:main"
+vuln-scanner = "vuln_scanner:main"
+
+[tool.setuptools]
+py-modules = ["log_parser", "vuln_scanner"]
+packages = []
