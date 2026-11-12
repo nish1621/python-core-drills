@@ -10,7 +10,7 @@ class DependencyAuditor:
         self.req_filepath = Path(req_filepath)
         if self.req_filepath.suffix != ".txt":
             raise ValueError(
-                f"Invalid requirement file extension: {self.req_filepath.suffix}"
+                f"Invalid requirements file extension: {self.req_filepath.suffix}"
             )
         self.audit_results: dict[str, list[str]] = {}
 
@@ -33,22 +33,25 @@ class DependencyAuditor:
         with open(output_filepath, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=4)
 
-        def main() -> None:
-            parser = argparse.ArgumentParser(
-                description="Audit Python dependencies for known vulnerabilities."
-            )
-            parser.add_argument(
-                "requirements_file", help="Path to the requirements.txt file to audit"
-            )
-            parser.add_argument(
-                "-o",
-                "--output",
-                default="audit_report.json",
-            )
-            args = parser.parse_args()
-            auditor = DependencyAuditor(args.requirements_file)
-            auditor.run_audit()
-            auditor.export_audit_report(args.output)
-            print(
-                f"Audit complete. Vulnerable packages found: {len(auditor.get_vulnerable_packages())}"
-            )
+    def main() -> None:
+        parser = argparse.ArgumentParser(
+            description="Audit Python dependencies for known vulnerabilities."
+        )
+        parser.add_argument(
+            "requirements_file", help="Path to the requirements.txt file to audit"
+        )
+        parser.add_argument(
+            "-o",
+            "--output",
+            default="audit_report.json",
+        )
+        args = parser.parse_args()
+        auditor = DependencyAuditor(args.requirements_file)
+        auditor.run_audit()
+        auditor.export_audit_report(args.output)
+        print(
+            f"Audit complete. Vulnerable packages found: {len(auditor.get_vulnerable_packages())}"
+        )
+
+    if __init__ == "__main__":
+        main()

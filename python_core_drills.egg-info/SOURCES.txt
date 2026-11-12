@@ -1,4 +1,5 @@
 README.md
+dep_auditor.py
 log_parser.py
 pyproject.toml
 vuln_scanner.py

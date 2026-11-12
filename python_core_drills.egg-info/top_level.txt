@@ -1,2 +1,3 @@
+dep_auditor
 log_parser
 vuln_scanner

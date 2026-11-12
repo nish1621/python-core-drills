@@ -13,6 +13,16 @@ def test_invalid_extension() -> None:
 
 
 @patch("dep_auditor.scan_requirements_file")
+def test_run_audit(mock_scan: MagicMock) -> None:
+    mock_scan.return_value = {
+        "jinja2==2.4.1": ["GHSA-1111"],
+        "safe==1.0.0": [],
+    }
+    auditor = DependencyAuditor("requirements.txt")
+    assert auditor.run_audit() == {"jinja2==2.4.1": ["GHSA-1111"], "safe==1.0.0": []}
+
+
+@patch("dep_auditor.scan_requirements_file")
 def test_get_vulnerable_packages(mock_scan: MagicMock, tmp_path: Path) -> None:
     mock_scan.return_value = {
         "jinja2==2.4.1": ["GHSA-1111"],
