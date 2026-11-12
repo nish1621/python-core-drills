@@ -22,7 +22,8 @@ dev = [
 [project.scripts]
 log-parser = "log_parser:main"
 vuln-scanner = "vuln_scanner:main"
+dep-auditor = "dep_auditor:main"
 
 [tool.setuptools]
-py-modules = ["log_parser", "vuln_scanner"]
+py-modules = ["log_parser", "vuln_scanner", "dep_auditor"]
 packages = []

@@ -1,0 +1,10 @@
+README.md
+log_parser.py
+pyproject.toml
+vuln_scanner.py
+python_core_drills.egg-info/PKG-INFO
+python_core_drills.egg-info/SOURCES.txt
+python_core_drills.egg-info/dependency_links.txt
+python_core_drills.egg-info/entry_points.txt
+python_core_drills.egg-info/requires.txt
+python_core_drills.egg-info/top_level.txt

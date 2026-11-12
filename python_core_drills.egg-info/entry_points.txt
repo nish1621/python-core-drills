@@ -1,0 +1,3 @@
+[console_scripts]
+log-parser = log_parser:main
+vuln-scanner = vuln_scanner:main
