@@ -33,6 +33,7 @@ class DependencyAuditor:
         with open(output_filepath, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=4)
 
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Audit Python dependencies for known vulnerabilities."
@@ -52,6 +53,7 @@ def main() -> None:
     print(
         f"Audit complete. Vulnerable packages found: {len(auditor.get_vulnerable_packages())}"
     )
+
 
 if __name__ == "__main__":
     main()
