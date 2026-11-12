@@ -1,1 +1,3 @@
 .venv/
+audit_report.json
+*.egg-info/
