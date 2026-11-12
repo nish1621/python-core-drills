@@ -1,4 +1,0 @@
-[console_scripts]
-dep-auditor = dep_auditor:main
-log-parser = log_parser:main
-vuln-scanner = vuln_scanner:main
