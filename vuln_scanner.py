@@ -1,3 +1,5 @@
+import argparse
+import json
 from pathlib import Path
 
 import requests
@@ -40,6 +42,17 @@ def scan_requirements_file(filepath: str | Path) -> dict[str, list[str]]:
     return results
 
 
+def main() -> None:
+    argparser = argparse.ArgumentParser(
+        description="Scan a requirements.txt file for known vulnerabilities."
+    )
+    argparser.add_argument(
+        "requirements_file", help="Path to the requirements.txt file"
+    )
+    args = argparser.parse_args()
+    results = scan_requirements_file(args.requirements_file)
+    print(json.dumps(results, indent=2))
+
+
 if __name__ == "__main__":
-    print("jinja2 2.4.1 vulns:", fetch_package_vulns("jinja2", "2.4.1"))
-    print("Requests 2.32.3 vulns:", fetch_package_vulns("requests", "2.32.3"))
+    main()
